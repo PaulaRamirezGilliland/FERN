@@ -1,0 +1,22 @@
+dataset: !include ./dataset.yaml
+
+scanner: !include ./scan.yaml
+test_stic: False 
+
+model:
+  model_type: SVoRTv2 
+  model_param:
+    n_iter: 3
+    iqa: False 
+    vol: False 
+    pe: True
+  device: 0
+  n_train: 800000
+  batch_size: 8 
+  lr: 0.0002
+  weight_decay: 0.01
+  warmup_steps: 500
+  weight_point: 1 
+  weight_T: 0    
+  weight_R: 0   
+  weight_img: 1000.0

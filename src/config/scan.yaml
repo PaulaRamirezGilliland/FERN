@@ -1,0 +1,27 @@
+# slice_resolution = resolution_slice_fac * volume_resolution
+resolution_slice_fac: 1
+# maximum of slice (2D) resolution (mm)
+resolution_slice_max: 0.2353
+# [min, max] of slice thickness (mm)
+slice_thickness: 0.2353
+# [min, max] of slice gap (mm)
+gap: 0.2353
+# resolution in reference 3D space (mm)
+resolution_recon: 0.2353
+# resolution of predicted transformation (mm) - for pred_full_res
+resolution_transform: 1
+min_num_seq: 1
+# Option to use multiple echo sequences in training
+max_num_seq: 1
+# maximum number of input frames in a sequence
+max_num_slices: 100
+# range of image noise for augmentation
+noise_sigma: [0.0, 0.02]
+# size of simulated slices (pixel)
+slice_size: 400
+# Axial slice index (in reference 3D space) where standard views end:
+idx_views: [37, 41, 44, 53, 94] # Vessels, RVOT, LVOT, 4CH, Situs/Rest
+# True means sample only from expected standard view locations, False from any 3D location
+restrict_transform: True
+# max random in-plane translation (mm)
+txy: 30
