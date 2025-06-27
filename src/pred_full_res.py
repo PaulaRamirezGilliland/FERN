@@ -86,13 +86,11 @@ if __name__ == "__main__":
 
         os.makedirs(path_save, exist_ok=True)
 
-        # TODO - double check that this loads fine
         transforms = RigidTransform(
             torch.from_numpy(np.load(os.path.join(args.transforms,str(i),
                                                   "transforms.npy"))).cuda())
         mat = transforms.matrix()
 
-        # TODO - double check this works
         mat = mat_update_resolution(mat,
                                     cfg["scanner"]["resolution_transform"],
                                     cfg["scanner"]["resolution_recon"])

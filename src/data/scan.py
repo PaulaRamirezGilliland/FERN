@@ -7,35 +7,6 @@ from transform import RigidTransform, mat2point
 from transform import random_angle, random_trans, RigidTransform, mat_update_resolution
 
 
-def get_sparse_in(prob=0.3):
-    """
-    Returns a list of randomly selected slice indices based on predefined ranges,
-    if 'test_transform' is not in `data` and with a certain probability - otherwise use full dense input.
-
-    Parameters:
-        prob (float): Probability of sparse standard view input. Default is 0.3.
-
-    Returns:
-        list or None: List of selected indices or None if condition not met.
-    """
-
-
-    if np.random.rand() > prob:
-        return None
-
-    random_slice_num = np.random.choice([1, 2, 3, 4])
-
-    slice_ranges = {
-        1: [[35, 45]],
-        2: [[30, 35], [35, 45], [45, 56]],
-        3: [[30, 35], [35, 40], [40, 45], [45, 56]],
-        4: [[30, 35], [35, 40], [41, 45], [45, 50], [50, 56]],
-    }
-
-    indices_fg = [np.random.choice(np.arange(start, end)) for start, end in slice_ranges[random_slice_num]]
-
-    return indices_fg
-
 
 
 def get_PSF(
@@ -111,6 +82,46 @@ def reset_transform(transform):
     transform = transform.axisangle()
     transform[:, :] = 0
     return RigidTransform(transform)
+
+
+import numpy as np
+
+def get_sparse_in(prob=0.3, slice_ranges=None):
+    """
+    Returns a list of randomly selected slice indices based on predefined or user-specified ranges,
+    with a certain probability – otherwise returns None (i.e., use dense input).
+
+    Parameters:
+        prob (float): Probability of using sparse input. Default is 0.3.
+        slice_ranges (dict): Optional dictionary mapping number of slices to their ranges.
+                             If None, uses default ranges.
+
+    Returns:
+        list or None: List of selected slice indices or None if full input is used.
+    """
+
+    if np.random.rand() > prob:
+        return None
+
+    # Use default slice ranges if none provided
+    if slice_ranges is None:
+        slice_ranges = {
+            1: [[35, 45]],
+            2: [[30, 35], [35, 45], [45, 56]],
+            3: [[30, 35], [35, 40], [40, 45], [45, 56]],
+            4: [[30, 35], [35, 40], [41, 45], [45, 50], [50, 56]],
+        }
+
+    # Choose how many slices to sample from (1 to 4)
+    random_slice_num = np.random.choice(list(slice_ranges.keys()))
+
+    # Sample one index from each sub-range
+    indices_fg = [
+        np.random.choice(np.arange(start, end))
+        for start, end in slice_ranges[random_slice_num]
+    ]
+
+    return indices_fg
 
 
 class Scanner:
@@ -284,15 +295,7 @@ class Scanner:
             # 2D test time - do not apply simulated transforms (inference)
             if "test_transform" in data:
 
-                # TODO - get rid of this
-                sigma_x = 1.2 / 2.3548
-                sigma_y = 1.2 / 2.3548
-                sigma_z = 3*1 / 2.3548
-
-                # Shape N_frames, C, H, W
-                smoother = GaussianSmooth(sigma=[sigma_z, sigma_y, sigma_x], approx="erf")
-                # Applying a smoothing filter
-                slices = (smoother(data['img_2d'].squeeze(0))).squeeze()[:].unsqueeze(1)
+                slices = data['img_2d'].squeeze(0).squeeze()[:].unsqueeze(1)
 
                 ns = slices.shape[0]
                 transform_target = init_seq_transforms(
@@ -342,11 +345,10 @@ class Scanner:
                     indices_fg.append(ind_s)
 
             # Randomly switch to 1-5 standard views with a 30%
-            # TODO - comment this back out
-            # if not "test_transform" in data:
-            #     sparse_indices = get_sparse_in(prob=0.3)
-            #     if sparse_indices:
-            #         indices_fg = sparse_indices
+            if not "test_transform" in data:
+                 sparse_indices = get_sparse_in(prob=0.3)
+                 if sparse_indices:
+                     indices_fg = sparse_indices
 
             if slices_mask:
                 slices_mask = slices_mask[indices_fg]
@@ -356,13 +358,13 @@ class Scanner:
             transform_init = transform_target.clone()
             transform_init = reset_transform(transform_init)
 
-            if "PE_2D" not in data:
-                positions = self.coarse_pe(ns, indices_fg)
-
-            else:
+            if "PE_2D" in data and "test_transform" in data:
                 positions = torch.tensor(data["PE_2D"][:]).float()
                 if isinstance(data["PE_2D"], list):
                     positions = positions.unsqueeze(1)
+
+            else:
+                positions = self.coarse_pe(ns, indices_fg)
 
             positions = positions[indices_fg]
             # Augmentation

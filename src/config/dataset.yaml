@@ -1,5 +1,5 @@
 device: 0
-data_dir: /data/PaulaData/Data/3D_echo_POSTDOC/DMD_experiments/controls/
+data_dir: /data/
 resolution_training: 1
 
 # Validation and test indexing from data_files - rest is assumed to be training
@@ -7,59 +7,18 @@ val_set: [0]
 test_set: [1]
 
 # ROI Mask paths & atlas -> set to null if not available
-mask_heart: null #/data/PaulaData/Data/3DUS/3D_and_2D_aligned/high_res_test_set/Repeat_mask-ED-iso-400
-mask_thorax: null #/data/PaulaData/Data/3DUS/3D_and_2D_aligned/high_res_test_set/Thorax_rep2-final-iso-400
-atlas: /data/PaulaData/Data/3DUS/3D_and_2D_aligned/atlas/corrected-average
+mask_heart: /data/mask_heart
+mask_thorax: /data/mask_thorax
+atlas: /data/atlas
 
 # Dataset file definitions
 data_files:
   - folder: E0000013
-    volume: I0000030-res02-ED
-    image_2d: I0000030-res02-ED
-    PE_2D: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-         1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3]
-  - folder: E0000013
-    volume: I0000030-res02-ED
-    image_2d: I0000030-res02-ED
-    PE_2D: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3]
-  - folder: E0000013
-    volume: I0000030-res02-ED
-    image_2d: I0000030-res02-ED
-    PE_2D: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3]
+    volume: stic
+    image_2d: std-views
+    PE_2D: [0, 0,  1, 2, 2, 3, 3]
 
-#  - folder: iFIND00207_13Jan2017
-#    volume: reg-IM_0168-ED-iso-400 # Assumes both the volume and 2D image within same folder (given by folder param)
-#    image_2d: reg-2d-3d-masked-400
-#    PE_2D: [0, 1, 2, 3]
-#
-#  - folder: iFIND00209_20Jan2017
-#    volume: reg-IM_0058-ED-iso-400
-#    image_2d: reg-2d-3d-masked-400
-#    PE_2D: [0, 0, 1, 3]
-#
-#  - folder: iFIND00251_12May2017
-#    volume: reg-IM_0243-ED-iso-400
-#    image_2d: reg-2d-3d-masked-400
-#    PE_2D: [2, 3]
-#
-#  - folder: iFIND00270_30Jun2017
-#    volume: reg-IM_0319-ED-iso-400
-#    image_2d: reg-2d-3d-masked-400
-#    PE_2D: [1, 2]
-#
-#  - folder: iFIND00474
-#    volume: reg-IM_0018-ED-iso-400
-#    image_2d: reg-2d-3d-masked-400
-#    PE_2D: [0, 2, 3]
-#
-#  - folder: iFIND00484_01Mar2019
-#    volume: reg-IM_0014-ED-iso-400
-#    image_2d: reg-2d-3d-masked-400
-#    PE_2D: [0, 1, 2, 3]
-#
-#  - folder: iFIND00366_02Feb2018
-#    volume: reg2-IM_0162-ED-iso-400
-#    image_2d: reg2-2d-3d-masked-400
-#    PE_2D: [0, 1, 2, 3]
+  - folder: E0000014
+    volume: stic
+    image_2d: std-views
+    PE_2D: [0, 0,  0, 2, 2, 3, 3]
