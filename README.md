@@ -44,9 +44,6 @@ python train.py --config ./config/config_SVoRTv2.yaml \
                 --output ../results/SVoRTv2
 ```
 
-## Pretrained model
-
-To use the pretrained model, please first download the [pretrain weights](https://zenodo.org/record/7486938#.Y7Sgn3bMI2w).
 
 ## Testing
 
