@@ -12,9 +12,7 @@ Authors: Paula Ramirez Gilliland, David F A Lloyd, Jacqueline Matthew, Reza Raza
 
 Code changes include: transformation sampling adaptation to decorrelated standard views _(transform.py, random_angle)_, coarse positional standard view indexing _(scan.py)_, training with slice loss _(train.py)_ , data augmentation strategies for accurate fetal cardiac alignment (random sparse input), and evaluation quantitative and similarity metrics _(pred_full_res.py, test.py)_.
 
-![SVoRT pipeline](diagram_poster.pdf)
-
-![Coarse view positional embedding](coarse_pe.pdf)
+![SVoRT pipeline](FERN.png)
 
 
 ## Requirements 
