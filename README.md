@@ -1,13 +1,20 @@
-# Slice-to-Volume Registration Transformer (SVoRT)
+# FERN: a Fetal Echocardiography Network for 2D-to-3D Registration
 
-This repo is the official implementation of the paper 'SVoRT: Iterative Transformer for Slice-to-Volume Registration in Fetal Brain MRI'
+This repository contains the code and models used in the MIDL 2025 paper for 2D-to-3D standard fetal echocardiography view registration. 
 
-## Resources
 
-- Paper ( [Springer](https://link.springer.com/chapter/10.1007/978-3-031-16446-0_1) | [arXiv](https://arxiv.org/abs/2206.10802) )
-- Check out [NeSVoR](https://github.com/daviddmc/NeSVoR) for an application of SVoRT
 
-## Requirements
+This repository is based on the official implementation of SVoRT (Xu et al., 2022) (https://arxiv.org/abs/2206.10802 , https://github.com/daviddmc/SVoRT), with modifications for the experiments and dataset in our paper:
+
+**FERN: A Fetal Echocardiography Registration Network for 2D-to-3D Alignment**
+
+Authors: Paula Ramirez Gilliland, David F A Lloyd, Jacqueline Matthew, Reza Razavi, Milou PM Van Poppel, Andrew P. King, Maria Deprez.
+
+Code changes include: transformation sampling adaptation to decorrelated standard views _(transform.py, random_angle)_, coarse positional standard view indexing _(scan.py)_, training with slice loss _(train.py)_ , data augmentation strategies for accurate fetal cardiac alignment (random sparse input), and evaluation quantitative and similarity metrics _(pred_full_res.py, test.py)_.
+
+
+
+## Requirements 
 
 - python 3.9
 - pytorch 1.10
@@ -16,16 +23,19 @@ This repo is the official implementation of the paper 'SVoRT: Iterative Transfor
 - antpy
 - scipy
 - nibabel
+- monai 1.3.1
+- pandas
 
-## Training from scratch
 
-### Generate training data
 
-To generate training data, please download the [CRL atlas](http://crl.med.harvard.edu/research/fetal_brain_atlas/) and [FeTA dataset v2.1](http://neuroimaging.ch/feta), unzip them in ```dataset/```, and run ```preprocessing.py```. You may also add your own training data (see `RegisteredDataset` in `.src/data/dataset.py`).
 
 ### Modify hyperparameters
 
-The hyperparameters of data simulation and model are stored in ```./src/config/```.
+As in the original SVoRT, the hyperparameters of data simulation and model are stored in ```./src/config/```.
+
+In dataset.yaml config file, we additionally include the option to add in standard view types at test time, 2D echocardiography and paired STIC volumes, as well as an atlas. 
+
+The scan.yaml config file includes data specific hyperparameters, such as expected standard view slice index in atlas space and resolution. 
 
 ### Run the training script
 
@@ -46,19 +56,16 @@ python test.py --config ./config/config_SVoRTv2.yaml \
                --checkpoint ../results/SVoRTv2/checkpoint.pt
 ```
 
-## Citation
+### Running on higher resolution grid 
 
 ```
-@inproceedings{xu2022svort,
-  title={SVoRT: Iterative Transformer for Slice-to-Volume Registration in Fetal Brain MRI},
-  author={Xu, Junshen and Moyer, Daniel and Grant, P Ellen and Golland, Polina and Iglesias, Juan Eugenio and Adalsteinsson, Elfar},
-  booktitle={International Conference on Medical Image Computing and Computer-Assisted Intervention},
-  pages={3--13},
-  year={2022},
-  organization={Springer}
-}
+python pred_full_res.py --config ./config/config_SVoRTv2.yaml \
+               --transforms ../results/SVoRTv2/transforms_npy \
+               --output ../results/SVoRTv2/test_output \
+               
 ```
+
 
 ## Contact
 
-For questions, please send an email to junshen@mit.edu
+For questions, please email: paula.ramirez_gilliland@kcl.ac.uk
