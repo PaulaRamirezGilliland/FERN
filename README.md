@@ -64,6 +64,10 @@ python pred_full_res.py --config ./config/config_SVoRTv2.yaml \
                
 ```
 
+### Pre-trained models
+
+Pre-trained models (five training rounds, 1 iteration, PE) are available here: [https://zenodo.org/uploads/15771441 ](https://zenodo.org/records/15771441)   
+10.5281/zenodo.15771441 
 
 ## Contact
 
